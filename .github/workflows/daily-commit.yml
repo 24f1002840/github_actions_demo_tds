@@ -1,0 +1,31 @@
+name: DevSync Daily Automated Commit
+
+on:
+  schedule:
+    # Runs at 08:30 UTC every day (Uses specific hours/minutes as required)
+    - cron: '30 8 * * *'
+  # Allows you to trigger the workflow manually for immediate testing
+  workflow_dispatch:
+
+jobs:
+  update-repository:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required permission to let GitHub Actions push commits
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step explicitly includes your required email address
+      - name: Update daily log for 24f1002840@ds.study.iitm.ac.in
+        run: |
+          echo "Automated commit ran on $(date)" >> activity_tracker.txt
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add activity_tracker.txt
+          git commit -m "Automated daily commit for DevSync compliance"
+          git push
